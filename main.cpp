@@ -15,6 +15,6 @@ int main ()
 
   StackDump (&stack, __FILE__, __LINE__);
 
-  StackDestruct (&stack);;
+  StackDestruct (&stack);
   return 0;
 }

@@ -9,7 +9,7 @@ stackElement_t INITIALIZE_VALUE = 0;
 
 const int STACK_SIZE = 1;
 
-void StackDump (Stack_t *stack, const char* file, const int line, FILE *stream)
+void StackDump (Stack_t *stack, const char *file, const int line, FILE *stream)
 {
   /*! Writes log with debug data to provided file or stdout
    * @param stack pointer to stack structure
@@ -18,8 +18,8 @@ void StackDump (Stack_t *stack, const char* file, const int line, FILE *stream)
    * @param stream file for output (stdin by default)
    * */
 
-  fprintf (stream, ANSI_COLOR_BLUE "*Stack Dump* %s  %s: line: %d Stack_t \"%s\" [%p] \n{\n" ANSI_COLOR_RESET,__DATE__ ,file, line, stack->name, stack);
-  for (int i = 0; i < stack->size; i++)
+  fprintf (stream, ANSI_COLOR_BLUE "*Stack Dump* %s  %s: line: %d Stack_t \"%s\" [%p] \n{\n" ANSI_COLOR_RESET, __DATE__, file, line, stack->name, stack);
+  for (size_t i = 0; i < stack->size; i++)
     {
       if (stack->data[i] != INITIALIZE_VALUE)
         {
@@ -42,7 +42,7 @@ bool StackOk (Stack_t *stack)
    * @return state true or false if stack valid or not respectively
    * */
 
-  for (int i = 0; i < stack->size; i++)
+  for (size_t i = 0; i < stack->size; i++)
     {
       if (stack->data[i] == INITIALIZE_VALUE)
         {
@@ -52,7 +52,7 @@ bool StackOk (Stack_t *stack)
   return true;
 }
 
-bool StackLogging (Stack_t *stack, const char* file,  int line, FILE *stream, bool silent)
+bool StackLogging (Stack_t *stack, const char *file, int line, FILE *stream, bool silent)
 {
   /*! Function wrapper for logging
    * @param stack ptr to stack
@@ -67,7 +67,7 @@ bool StackLogging (Stack_t *stack, const char* file,  int line, FILE *stream, bo
     {
       if (silent)
         {
-          StackDump (stack,file,line, stream);
+          StackDump (stack, file, line, stream);
           return false;
         }
       else
@@ -78,7 +78,7 @@ bool StackLogging (Stack_t *stack, const char* file,  int line, FILE *stream, bo
   return true;
 }
 
-Stack_t StackConstruct (int size)
+Stack_t StackConstruct (size_t size)
 {
   /*! Stack constructor
    * Initializes base structure
@@ -86,7 +86,7 @@ Stack_t StackConstruct (int size)
    * @return stack returns stack structure
    * */
 
-  Stack_t stack;
+  auto stack = Stack_t{};
   stack.data = (stackElement_t *) calloc (size, sizeof (stackElement_t));
   stack.size = 0;
   stack.current_max_size = size;
@@ -107,7 +107,7 @@ bool ReallocateStack (Stack_t *stack, unsigned int size_multiplier)
   stack->current_max_size = stack->size * size_multiplier;
   stack->data = (stackElement_t *) realloc (stack->data, stack->current_max_size * sizeof (stackElement_t));
 
-  if(!stack->data)
+  if (!stack->data)
     {
       return false;
     }
@@ -180,7 +180,6 @@ bool StackPeek (Stack_t *stack, stackElement_t *value)
   assert (stack);
   STACK_OK;
 
-
   if (stack->size)
     {
       *value = stack->data[stack->size - 1];
@@ -199,11 +198,11 @@ bool StackDestruct (Stack_t *stack)
   assert(stack);
   STACK_OK;
 
-  stack->size = 0;
-  memset (stack->data, INITIALIZE_VALUE, sizeof (stackElement_t) * STACK_SIZE);
+  stack->size = NULL;
+  free(stack->data);
 
 #ifdef DEBUG
-  stack->name = 0;
+  stack->name = nullptr;
 #endif
 
   return true;

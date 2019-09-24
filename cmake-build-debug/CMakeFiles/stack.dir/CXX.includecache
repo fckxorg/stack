@@ -10,12 +10,16 @@
 stack.h
 /home/maxim/CLionProjects/stack/stack.h
 
+/home/maxim/CLionProjects/stack/stack.cpp
+stack.h
 /home/maxim/CLionProjects/stack/stack.h
-stdio.h
+
+/home/maxim/CLionProjects/stack/stack.h
+cstdio
 -
-stdlib.h
+cstdlib
 -
-assert.h
+cassert
 -
 cstring
 -

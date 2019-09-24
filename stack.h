@@ -2,9 +2,9 @@
 // Created by maxim on 24.09.19.
 //
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cassert>
 #include <cstring>
 
 #define DEBUG 1
@@ -18,8 +18,8 @@ typedef int stackElement_t;
 
 struct Stack_t {
     stackElement_t *data;
-    int size;
-    int current_max_size;
+    size_t size;
+    size_t current_max_size;
 #ifdef DEBUG
     const char *name;
 #endif
@@ -28,7 +28,7 @@ struct Stack_t {
 void StackDump (Stack_t *stack, const char* file, int line, FILE *stream = stdout);
 bool StackOk (Stack_t *stack);
 bool StackLogging (Stack_t *stack, const char* file, int line, FILE *stream, bool silent=true);
-Stack_t StackConstruct (int size=1);
+Stack_t StackConstruct (size_t size=1);
 bool ReallocateStack (Stack_t *stack, unsigned int size_multiplier);
 bool StackPush (Stack_t *stack, stackElement_t value);
 bool StackPop (Stack_t *stack, stackElement_t *value);
