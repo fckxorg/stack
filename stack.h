@@ -25,10 +25,10 @@ struct Stack_t {
 #endif
 };
 
-void StackDump (Stack_t *stack, int line, FILE *stream = stdout);
+void StackDump (Stack_t *stack, const char* file, int line, FILE *stream = stdout);
 bool StackOk (Stack_t *stack);
-bool StackLogging (Stack_t *stack, int line, FILE *stream, bool silent=true);
-Stack_t StackConstruct ();
+bool StackLogging (Stack_t *stack, const char* file, int line, FILE *stream, bool silent=true);
+Stack_t StackConstruct (int size=1);
 bool ReallocateStack (Stack_t *stack, unsigned int size_multiplier);
 bool StackPush (Stack_t *stack, stackElement_t value);
 bool StackPop (Stack_t *stack, stackElement_t *value);

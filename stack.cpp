@@ -1,6 +1,7 @@
 //
 // Created by maxim on 24.09.19.
 //
+#define STACK_OK assert (StackLogging(stack, __FILE__, __LINE__, stdout))
 
 #include "stack.h"
 
@@ -8,9 +9,16 @@ stackElement_t INITIALIZE_VALUE = 0;
 
 const int STACK_SIZE = 1;
 
-void StackDump (Stack_t *stack, int line, FILE *stream)
+void StackDump (Stack_t *stack, const char* file, const int line, FILE *stream)
 {
-  fprintf (stream, ANSI_COLOR_BLUE "Stack Dump Line: %d Stack_t \"%s\" [%p] \n{\n" ANSI_COLOR_RESET, line, stack->name, stack);
+  /*! Writes log with debug data to provided file or stdout
+   * @param stack pointer to stack structure
+   * @param file string with filename
+   * @param line number of line
+   * @param stream file for output (stdin by default)
+   * */
+
+  fprintf (stream, ANSI_COLOR_BLUE "*Stack Dump* %s  %s: line: %d Stack_t \"%s\" [%p] \n{\n" ANSI_COLOR_RESET,__DATE__ ,file, line, stack->name, stack);
   for (int i = 0; i < stack->size; i++)
     {
       if (stack->data[i] != INITIALIZE_VALUE)
@@ -29,24 +37,37 @@ bool StackOk (Stack_t *stack)
 {
   assert (stack);
 
+  /*! Stack verificator
+   * @param stack pointer to stack
+   * @return state true or false if stack valid or not respectively
+   * */
+
   for (int i = 0; i < stack->size; i++)
     {
       if (stack->data[i] == INITIALIZE_VALUE)
         {
           return false;
         }
-      stack->data++;
     }
   return true;
 }
 
-bool StackLogging (Stack_t *stack, int line, FILE *stream, bool silent)
+bool StackLogging (Stack_t *stack, const char* file,  int line, FILE *stream, bool silent)
 {
+  /*! Function wrapper for logging
+   * @param stack ptr to stack
+   * @param file string with name of file
+   * @param line number of line
+   * @param stream file for output (stdout by default)
+   * @param silent flag to specify if logger should use asserts or log everything silently
+   * @return state true or false if stack is valid or not respectively
+   * */
+
   if (!StackOk (stack))
     {
       if (silent)
         {
-          StackDump (stack, line, stream);
+          StackDump (stack,file,line, stream);
           return false;
         }
       else
@@ -57,35 +78,55 @@ bool StackLogging (Stack_t *stack, int line, FILE *stream, bool silent)
   return true;
 }
 
-Stack_t StackConstruct ()
+Stack_t StackConstruct (int size)
 {
-  Stack_t stack;
-  stack.data = (stackElement_t *) calloc (1, sizeof (stackElement_t));
-  stack.size = 0;
-  stack.current_max_size = 1;
+  /*! Stack constructor
+   * Initializes base structure
+   * @param size defines start size of stack
+   * @return stack returns stack structure
+   * */
 
-  StackLogging (&stack, __LINE__, stdout);
+  Stack_t stack;
+  stack.data = (stackElement_t *) calloc (size, sizeof (stackElement_t));
+  stack.size = 0;
+  stack.current_max_size = size;
 
   return stack;
 }
 
 bool ReallocateStack (Stack_t *stack, unsigned int size_multiplier)
 {
+  /*! Expands stack
+   * @param stack ptr to stack
+   * @param size_multiplier
+   * @return state true or false if stack was successfully expanded or not respectively
+   * */
+
   assert(stack);
-  //assert (StackLogging (stack, __LINE__, stdout));
 
   stack->current_max_size = stack->size * size_multiplier;
   stack->data = (stackElement_t *) realloc (stack->data, stack->current_max_size * sizeof (stackElement_t));
 
-  //assert(StackLogging (stack, __LINE__, stdout));
+  if(!stack->data)
+    {
+      return false;
+    }
+
+  STACK_OK;
 
   return true;
 }
 
 bool StackPush (Stack_t *stack, stackElement_t value)
 {
+  /*! Adds new element to stack
+   * @param stack ptr to stack
+   * @param value value to add
+   * */
+
   assert(stack);
-  //assert(StackLogging (stack, __LINE__, stdout));
+
+  STACK_OK;
 
   if (stack->size < stack->current_max_size)
     {
@@ -93,50 +134,70 @@ bool StackPush (Stack_t *stack, stackElement_t value)
     }
   else
     {
-      StackDump (stack, __LINE__);
       ReallocateStack (stack, 2);
-      StackDump (stack, __LINE__);
       stack->data[stack->size++] = value;
     }
 
-  //assert(StackLogging (stack, __LINE__, stdout));
+  STACK_OK;
 
   return true;
 }
 
 bool StackPop (Stack_t *stack, stackElement_t *value)
 {
+  /*! Removes last element from stack and saves it to provided variable
+   * @param stack pointer to stack
+   * @param value pointer to variable for value
+   * @return true or false if pop was successful or not respectively
+   * */
+
   assert (stack);
-  //assert(StackLogging (stack, __LINE__, stdout));
+  STACK_OK;
 
   if (stack->size)
     {
       *value = stack->data[stack->size--];
       stack->data[stack->size] = INITIALIZE_VALUE;
 
-      //assert(StackLogging (stack, __LINE__, stdout));
+      STACK_OK;
+
       return true;
     }
+
+  STACK_OK;
+
   return false;
 }
 
 bool StackPeek (Stack_t *stack, stackElement_t *value)
 {
+  /*! Saves last element from stack to provided variable
+   * @param stack pointer to stack
+   * @param value pointer to variable for value
+   * @return true or false if pop was successful or not respectively
+   * */
+
   assert (stack);
-  assert(StackLogging (stack, __LINE__, stdout));
+  STACK_OK;
+
 
   if (stack->size)
     {
       *value = stack->data[stack->size - 1];
       return true;
     }
-  return false;;
+
+  return false;
 }
 
 bool StackDestruct (Stack_t *stack)
 {
+  /*! Destructs stack
+   * @param stack pointer to stack
+   * @return state true or false if stack destruction was successful or not
+   * */
   assert(stack);
-  //assert(StackLogging (stack, __LINE__, stdout));
+  STACK_OK;
 
   stack->size = 0;
   memset (stack->data, INITIALIZE_VALUE, sizeof (stackElement_t) * STACK_SIZE);
@@ -144,5 +205,6 @@ bool StackDestruct (Stack_t *stack)
 #ifdef DEBUG
   stack->name = 0;
 #endif
+
   return true;
 }
