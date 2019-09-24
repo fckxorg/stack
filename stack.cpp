@@ -74,13 +74,8 @@ bool ReallocateStack (Stack_t *stack, unsigned int size_multiplier)
   assert(stack);
   //assert (StackLogging (stack, __LINE__, stdout));
 
-  auto new_stack_data = (stackElement_t *) calloc (stack->size * size_multiplier, sizeof (stackElement_t));
-
-  memcpy (new_stack_data, stack->data, sizeof(stackElement_t)*stack->size);
-  free (stack->data);
-
-  stack->data = new_stack_data;
   stack->current_max_size = stack->size * size_multiplier;
+  stack->data = (stackElement_t *) realloc (stack->data, stack->current_max_size * sizeof (stackElement_t));
 
   //assert(StackLogging (stack, __LINE__, stdout));
 
