@@ -85,6 +85,12 @@
 		<Unit filename="/home/maxim/CLionProjects/stack/main.cpp">
 			<Option target="stack"/>
 		</Unit>
+		<Unit filename="/home/maxim/CLionProjects/stack/stack.cpp">
+			<Option target="stack"/>
+		</Unit>
+		<Unit filename="/home/maxim/CLionProjects/stack/stack.h">
+			<Option target="stack"/>
+		</Unit>
 		<Unit filename="/home/maxim/CLionProjects/stack/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>

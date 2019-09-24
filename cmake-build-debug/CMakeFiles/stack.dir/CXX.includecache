@@ -6,11 +6,17 @@
 
 #IncludeRegexTransform: 
 
-/home/maxim/CLionProjects/stack/main.cpp
-cstring
--
+/home/maxim/CLionProjects/stack/stack.cpp
+stack.h
+/home/maxim/CLionProjects/stack/stack.h
+
+/home/maxim/CLionProjects/stack/stack.h
 stdio.h
 -
+stdlib.h
+-
 assert.h
+-
+cstring
 -
 
