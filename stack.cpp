@@ -8,6 +8,7 @@
 stackElement_t INITIALIZE_VALUE = 0;
 
 const int STACK_SIZE = 1;
+const float low_multiplier = 0.7;
 
 void StackDump (Stack_t *stack, const char *file, const int line, FILE *stream)
 {
@@ -94,7 +95,7 @@ Stack_t StackConstruct (size_t size)
   return stack;
 }
 
-bool ReallocateStack (Stack_t *stack, unsigned int size_multiplier)
+bool ReallocateStack (Stack_t *stack, float size_multiplier)
 {
   /*! Expands stack
    * @param stack ptr to stack
@@ -104,13 +105,14 @@ bool ReallocateStack (Stack_t *stack, unsigned int size_multiplier)
 
   assert(stack);
 
-  stack->current_max_size = stack->size * size_multiplier;
-  stack->data = (stackElement_t *) realloc (stack->data, stack->current_max_size * sizeof (stackElement_t));
+  stack->current_max_size = (int)(stack->size * size_multiplier);
+  auto tmp = (stackElement_t *) realloc (stack->data, stack->current_max_size * sizeof (stackElement_t));
 
-  if (!stack->data)
+  if (!tmp)
     {
       return false;
     }
+  stack->data = tmp;
 
   STACK_OK;
 
@@ -164,7 +166,12 @@ bool StackPop (Stack_t *stack, stackElement_t *value)
       return true;
     }
 
-  STACK_OK;
+  if (stack->size < stack->current_max_size * low_multiplier)
+    {
+      ReallocateStack (stack, low_multiplier);
+    }
+
+    STACK_OK;
 
   return false;
 }
@@ -199,7 +206,7 @@ bool StackDestruct (Stack_t *stack)
   STACK_OK;
 
   stack->size = NULL;
-  free(stack->data);
+  free (stack->data);
 
 #ifdef DEBUG
   stack->name = nullptr;

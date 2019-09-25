@@ -14,7 +14,6 @@ int main ()
   StackPop (&stack, &value);
 
   StackDump (&stack, __FILE__, __LINE__);
-
   StackDestruct (&stack);
   return 0;
 }

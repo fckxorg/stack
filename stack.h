@@ -29,7 +29,7 @@ void StackDump (Stack_t *stack, const char* file, int line, FILE *stream = stdou
 bool StackOk (Stack_t *stack);
 bool StackLogging (Stack_t *stack, const char* file, int line, FILE *stream, bool silent=true);
 Stack_t StackConstruct (size_t size=1);
-bool ReallocateStack (Stack_t *stack, unsigned int size_multiplier);
+bool ReallocateStack (Stack_t *stack, float size_multiplier);
 bool StackPush (Stack_t *stack, stackElement_t value);
 bool StackPop (Stack_t *stack, stackElement_t *value);
 bool StackPeek (Stack_t *stack, stackElement_t *value);
