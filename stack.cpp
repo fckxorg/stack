@@ -97,7 +97,7 @@ Stack_t StackConstruct (size_t size)
 
 bool ReallocateStack (Stack_t *stack, float size_multiplier)
 {
-  /*! Expands stack
+  /*! Expands or folds stack
    * @param stack ptr to stack
    * @param size_multiplier
    * @return state true or false if stack was successfully expanded or not respectively
@@ -105,7 +105,7 @@ bool ReallocateStack (Stack_t *stack, float size_multiplier)
 
   assert(stack);
 
-  stack->current_max_size = (int)(stack->size * size_multiplier);
+  stack->current_max_size = (size_t)(stack->size * size_multiplier);
   auto tmp = (stackElement_t *) realloc (stack->data, stack->current_max_size * sizeof (stackElement_t));
 
   if (!tmp)
